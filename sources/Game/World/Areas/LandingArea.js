@@ -36,27 +36,30 @@ export class LandingArea extends Area
     }
 
     setLetters()
+{
+    const references = this.references.items.get('letters')
+    
+    // Exit gracefully if no letters found
+    if(!references || references.length === 0)
     {
-        const references = this.references.items.get('letters')
-        
-        // Exit early if letters don't exist
-        if(!references || references.length === 0)
-            return
+        console.warn('No letters references found - physics will still work')
+        return
+    }
 
-        for(const reference of references)
+    for(const reference of references)
+    {
+        const physical = reference.userData.object?.physical
+        if(!physical || !physical.colliders)
+            continue
+            
+        physical.colliders[0].setActiveEvents(this.game.RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
+        physical.colliders[0].setContactForceEventThreshold(5)
+        physical.onCollision = (force, position) =>
         {
-            const physical = reference.userData.object?.physical
-            if(!physical)
-                continue
-                
-            physical.colliders[0].setActiveEvents(this.game.RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
-            physical.colliders[0].setContactForceEventThreshold(5)
-            physical.onCollision = (force, position) =>
-            {
-                this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
-            }
+            this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
         }
     }
+}
 
     setKiosk()
     {
