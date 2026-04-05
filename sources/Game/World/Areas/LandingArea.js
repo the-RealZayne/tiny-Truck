@@ -14,11 +14,25 @@ export class LandingArea extends Area
 
         this.localTime = uniform(0)
 
-        //this.setLetters()
+        this.hideTextVisuals()
+        this.setLetters()
         this.setKiosk()
         this.setControls()
         this.setBonfire()
         this.setAchievement()
+    }
+
+    hideTextVisuals()
+    {
+        const children = [...this.model.children]
+        for(const child of children)
+        {
+            if(child.name.includes("Text.003-Text.001"))
+            {
+                child.visible = false
+                child.userData.alwaysHidden = true
+            }
+        }
     }
 
     setLetters()
@@ -43,18 +57,6 @@ export class LandingArea extends Area
             }
         }
     }
-
-     //   for(const reference of references)
-      //  {
-      //      const physical = reference.userData.object.physical
-    //        physical.colliders[0].setActiveEvents(this.game.RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
-     //       physical.colliders[0].setContactForceEventThreshold(5)
-     //       physical.onCollision = (force, position) =>
-    //        {
-       //         this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
-    //        }
-    //    }
- //   }
 
     setKiosk()
     {
