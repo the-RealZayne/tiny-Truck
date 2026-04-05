@@ -21,9 +21,28 @@ export class LandingArea extends Area
         this.setAchievement()
     }
 
-    //setLetters()
-    //{
-    //    const references = this.references.items.get('letters')
+    setLetters()
+    {
+        const references = this.references.items.get('letters')
+        
+        // Exit early if letters don't exist
+        if(!references || references.length === 0)
+            return
+
+        for(const reference of references)
+        {
+            const physical = reference.userData.object?.physical
+            if(!physical)
+                continue
+                
+            physical.colliders[0].setActiveEvents(this.game.RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
+            physical.colliders[0].setContactForceEventThreshold(5)
+            physical.onCollision = (force, position) =>
+            {
+                this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
+            }
+        }
+    }
 
      //   for(const reference of references)
       //  {
